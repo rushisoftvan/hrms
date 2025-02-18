@@ -1,13 +1,17 @@
 package com.ru.hrms_service.common.models.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.springframework.http.HttpStatus;
+
+import java.io.Serializable;
 
 @Builder
 @AllArgsConstructor
-public class ApiResponse {
+@NoArgsConstructor
+@Getter
+@Setter
+public class ApiResponse   {
 
     private int status;
     private String message;

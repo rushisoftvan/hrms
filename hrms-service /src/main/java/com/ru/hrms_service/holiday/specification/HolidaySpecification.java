@@ -4,9 +4,9 @@ import com.ru.hrms_service.holiday.entities.HolidayEntity;
 import com.ru.hrms_service.holiday.enums.HolidayStatusCodeEnum;
 import com.ru.hrms_service.holiday.models.request.FetchHolidaysReq;
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Component
+
 public class HolidaySpecification {
 
          public  static Specification<HolidayEntity> fetchHolidays(FetchHolidaysReq fetchHolidaysReq){
