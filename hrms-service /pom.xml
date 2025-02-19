@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<sonar.login>sqp_4b4e2c5c4b4c7ac0fd31ecdd825190b1e8a6894a</sonar.login>
+		<assertj-core.version>3.24.2</assertj-core.version>
 	</properties>
 
 	<dependencies>
@@ -67,6 +68,17 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

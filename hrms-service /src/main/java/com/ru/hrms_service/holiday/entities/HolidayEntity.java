@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Table(name="holiday")
 @Getter
 @Setter
-
+@NoArgsConstructor
 public class HolidayEntity  extends BaseEntity {
 
     @Column(name="name")

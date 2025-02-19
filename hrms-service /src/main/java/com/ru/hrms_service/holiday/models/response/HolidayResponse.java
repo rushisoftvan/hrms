@@ -1,15 +1,15 @@
 package com.ru.hrms_service.holiday.models.response;
 
 import com.ru.hrms_service.holiday.entities.HolidayEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HolidayResponse {
 
     private String holidayName;

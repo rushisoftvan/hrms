@@ -19,7 +19,10 @@ import java.util.List;
 public class HolidayService {
     private final HolidayRepo holidayRepo;
 
+
+
     public ApiResponse fetchHolidays(FetchHolidaysReq fetchHolidaysReq) {
+
         var holidaysSpec = HolidaySpecification.fetchHolidays(fetchHolidaysReq);
         List<HolidayResponse> listOfHolidayResponse = prepareHolidayResponse(holidaysSpec);
         log.info("holiday response : {}",listOfHolidayResponse.size());
@@ -33,4 +36,5 @@ public class HolidayService {
                 .map(HolidayResponse::prepareHolidayResponse)
                 .toList();
     }
+
 }

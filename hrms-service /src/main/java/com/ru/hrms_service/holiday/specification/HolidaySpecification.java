@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -15,9 +16,10 @@ import java.util.List;
 
 
 
+@Component
 public class HolidaySpecification {
 
-         public  static Specification<HolidayEntity> fetchHolidays(FetchHolidaysReq fetchHolidaysReq){
+         public static  Specification<HolidayEntity> fetchHolidays(FetchHolidaysReq fetchHolidaysReq){
 
              return (root, query, criteriaBuilder) -> {
                  List<Predicate> predicates = buildFetchPredicates(fetchHolidaysReq, root, criteriaBuilder);
@@ -26,9 +28,9 @@ public class HolidaySpecification {
 
          }
 
-         private HolidaySpecification(){
-              throw new IllegalArgumentException();
-         }
+//         private HolidaySpecification(){
+//              throw new IllegalArgumentException();
+//         }
 
     private static List<Predicate> buildFetchPredicates(FetchHolidaysReq fetchHolidaysReq,
                                                         Root<HolidayEntity> root, CriteriaBuilder criteriaBuilder) {
