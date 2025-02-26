@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuEntity  extends BaseEntity{
+public class MenuEntity  extends LongIdEntity{
 
     @Column(name="name",nullable = false)
     private String  name;

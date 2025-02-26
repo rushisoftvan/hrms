@@ -5,10 +5,8 @@ import com.ru.hrms_service.holiday.models.request.FetchHolidaysReq;
 import com.ru.hrms_service.holiday.services.HolidayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/hrms/holiday")
@@ -21,5 +19,11 @@ public class HolidayController {
     public ResponseEntity<ApiResponse> fetchHolidayList( @RequestBody FetchHolidaysReq fetchHolidaysReq){
        return ResponseEntity.ok(this.holidayService.fetchHolidays(fetchHolidaysReq));
     }
+
+   @PostMapping("/importHolidayCsv")
+   public void importHoliday(@RequestParam("file") MultipartFile file){
+        this.holidayService.importHoliday(file);
+   }
+
 
 }

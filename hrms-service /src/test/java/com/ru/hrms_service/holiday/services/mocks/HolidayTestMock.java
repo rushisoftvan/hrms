@@ -21,7 +21,7 @@ public class HolidayTestMock {
     public HolidayEntity setHolidayEntity(){
         HolidayEntity holidayEntity = new HolidayEntity();
         holidayEntity.setName("Mahashivratri");
-        holidayEntity.setOptionl(true);
+        holidayEntity.setOptional(true);
         holidayEntity.setId(1L);
 
         holidayEntity.setHolidayDate(LocalDate.now());

@@ -9,11 +9,11 @@ import java.time.Instant;
 @MappedSuperclass
 @Getter
 @Setter
-public class BaseEntity {
+public  class BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     private Boolean deleteFlag;
 
@@ -31,6 +31,8 @@ public class BaseEntity {
     @JoinColumn(name="updated_by")
     private UserEntity updatedBy;
 
+
+
     @PrePersist
     public void prePersist(){
         this.deleteFlag = false;
@@ -39,6 +41,4 @@ public class BaseEntity {
         this.updatedOn=createdOn;
 
     }
-
-
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class RoleEntity extends BaseEntity {
+public class RoleEntity extends LongIdEntity {
 
     @Column(name="role_name",nullable = false)
     private String roleName;
