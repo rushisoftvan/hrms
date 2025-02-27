@@ -1,6 +1,5 @@
 package com.ru.hrms_service.holiday.entities;
 
-import com.ru.hrms_service.common.entities.BaseEntity;
 import com.ru.hrms_service.common.entities.LongIdEntity;
 import com.ru.hrms_service.holiday.enums.ImportHolidayStatusEnum;
 import jakarta.persistence.*;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name="import_holiday_temp")
-public class ImportHolidayTemp extends LongIdEntity {
+public class ImportHolidayTempEntity extends LongIdEntity {
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="batch_job_status_id")
@@ -38,6 +37,5 @@ public class ImportHolidayTemp extends LongIdEntity {
 
     @Column(name="remarks")
     private String remarks;
-
 
 }

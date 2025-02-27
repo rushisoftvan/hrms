@@ -16,7 +16,6 @@ import com.ru.hrms_service.holiday.repositories.*;
 import com.ru.hrms_service.holiday.specification.HolidaySpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -98,41 +99,113 @@ public class HolidayService {
 
             List<HolidayRowDTO> dtos = csvToBean.parse();
 
-            List<ImportHolidayTemp> importHolidayTemps = new ArrayList<>();
+            List<ImportHolidayTempEntity> importHolidayTempEntities = new ArrayList<>();
             int rowNumber = 1;
             for (HolidayRowDTO data : dtos) {
-                ImportHolidayTemp importHolidayTemp = new ImportHolidayTemp();
-                importHolidayTemp.setHolidayName(data.getHolidayName());
-                importHolidayTemp.setOptionl(Boolean.getBoolean(data.getIsOptional()));
-                importHolidayTemp.setHolidayDate(dateConverter(data.getHolidayDate()));
-                importHolidayTemp.setBatchJobStatusEntity(savedBacthJob);
-                importHolidayTemp.setRowNumber(rowNumber);
-                importHolidayTemp.setBatchJobStatusEntity(savedBacthJob);
-                importHolidayTemp.setStatus(ImportHolidayStatusEnum.NEW);
-                importHolidayTemp.setCreatedBy(new UserEntity(1L));
-                importHolidayTemp.setUpdatedBy(new UserEntity(1L));
-                importHolidayTemp.setRemarks("import temp");
-                importHolidayTemps.add(importHolidayTemp);
+                ImportHolidayTempEntity importHolidayTempEntity = new ImportHolidayTempEntity();
+                importHolidayTempEntity.setHolidayName(data.getHolidayName());
+                importHolidayTempEntity.setOptionl(Boolean.getBoolean(data.getIsOptional()));
+                importHolidayTempEntity.setHolidayDate(dateConverter(data.getHolidayDate()));
+                importHolidayTempEntity.setBatchJobStatusEntity(savedBacthJob);
+                importHolidayTempEntity.setRowNumber(rowNumber);
+                importHolidayTempEntity.setBatchJobStatusEntity(savedBacthJob);
+                importHolidayTempEntity.setStatus(ImportHolidayStatusEnum.NEW);
+                importHolidayTempEntity.setCreatedBy(new UserEntity(1L));
+                importHolidayTempEntity.setUpdatedBy(new UserEntity(1L));
+                importHolidayTempEntity.setRemarks("import temp");
+                importHolidayTempEntities.add(importHolidayTempEntity);
                 rowNumber++;
             }
-            importHolidayTempRepo.saveAll(importHolidayTemps);
+            importHolidayTempRepo.saveAll(importHolidayTempEntities);
 
-            List<ValidationRuleEntity>  validationRuleEntity = validationRuleRepo.findByEntityNameAndDeleteFlagFalse("HolidayEntity".trim());
+            List<ValidationRuleEntity>  validationRuleEntities = validationRuleRepo.findByEntityNameAndDeleteFlagFalse(
+                    "ImportHolidayTempEntity".trim());
 
 
-            List<ImportHolidayTemp> importHolidaysInTempBasedOnBatchId =
+            List<ImportHolidayTempEntity> importHolidaysInTempBasedOnBatchId =
                     this.importHolidayTempRepo.findByBatchId(savedBacthJob.getId());
 
-            for(ImportHolidayTemp importHolidayInTempBasedOnBatchId : importHolidaysInTempBasedOnBatchId ){
+//            for(ValidationRuleEntity validationRule : validationRuleEntities ){
+//
+//                 for(ImportHolidayTempEntity holidayTempTable : importHolidaysInTempBasedOnBatchId ){
+//                     StringBuilder remarks = new StringBuilder("");
+//                     try {
+//                         Field declaredField = holidayTempTable.getClass().getDeclaredField(validationRule.getColumnName());
+//                         declaredField.setAccessible(true);
+//                         Object value = declaredField.get(holidayTempTable);
+//
+//                         if(validationRule.isRequired()){
+//
+//                             if(Objects.isNull(value)){
+//                                 remarks.append(" "). append("row no : " ).append(validationRule.getColumnName()).append("is required");
+//                                 holidayTempTable.setStatus(ImportHolidayStatusEnum.INVALID);
+//                             }
+//
+//                         }
+//
+//                         holidayTempTable.setRemarks(remarks.toString());
+//
+//                     }
+//
+//                     catch (NoSuchFieldException e) {
+//                         throw new RuntimeException(e);
+//                     } catch (IllegalAccessException e) {
+//                         throw new RuntimeException(e);
+//                     }
+//                 }
+//
+//
+//            }
 
 
+            for(ImportHolidayTempEntity holidayTemp  : importHolidaysInTempBasedOnBatchId){
+                StringBuilder remarks = new StringBuilder("");
+                for(ValidationRuleEntity validationRule  : validationRuleEntities ){
+
+                    try {
+                        Field declaredField = holidayTemp.getClass().getDeclaredField(validationRule.getColumnName());
+                        declaredField.setAccessible(true);
+                        Object value = declaredField.get(holidayTemp);
+
+                        if(validationRule.isRequired()){
+
+                             if(Objects.isNull(value) || value==""){
+                                 remarks.append(" "). append("row no : " ).append(holidayTemp.getRowNumber()).append(
+                                         " ").append(validationRule.getColumnName()).append("is required");
+                                 holidayTemp.setStatus(ImportHolidayStatusEnum.INVALID);
+                             }
+                         }
+                    } catch (NoSuchFieldException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                }
+                holidayTemp.setRemarks(remarks.toString());
+            }
+
+            List<ImportHolidayTempEntity>  updatedHolidayTempAfterValidation =
+                    importHolidayTempRepo.saveAll(importHolidaysInTempBasedOnBatchId);
+
+            boolean isDataInValid = updatedHolidayTempAfterValidation.stream().anyMatch((data) -> data.getStatus() == ImportHolidayStatusEnum.INVALID);
+
+            if(isDataInValid){
+
+                Optional<BatchJobStatusEntity> batchStatusEntity = this.batchJobStatusRepo.findByIdAndDeleteFlagFalse(savedBacthJob.getId());
+                BatchJobStatusEntity batch = batchStatusEntity.map(entity -> {
+                    entity.setStatus(BatchJobStatusEnum.ERROR);
+                    return entity;
+                }).orElseThrow(() -> new RuntimeException("batch is not found"));
+                this.batchJobStatusRepo.save(batch);
+
+               }
+            else
+            {
 
 
             }
-
-
-
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -142,6 +215,10 @@ public class HolidayService {
     }
 
     private LocalDate dateConverter(String date) {
+
+        if(date.isEmpty()){
+            return  null;
+        }
 
         if("holidatDate".equals(date)){
             return LocalDate.now();
