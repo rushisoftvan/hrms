@@ -3,6 +3,7 @@ package com.ru.hrms_service.holiday.controller;
 import com.ru.hrms_service.common.models.response.ApiResponse;
 import com.ru.hrms_service.holiday.models.request.FetchHolidaysReq;
 import com.ru.hrms_service.holiday.services.HolidayService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,10 @@ public class HolidayController {
         this.holidayService.importHoliday(file);
    }
 
+
+   @GetMapping("/getImportHolidayStatus/{bacthId}")
+   public void  getHolidayImportStatus(@PathVariable("batcgId") Long batchId){
+        this.holidayService.getHolidayImportStatus(batchId);
+   }
 
 }
