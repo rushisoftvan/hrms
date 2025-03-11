@@ -11,6 +11,7 @@ import com.ru.hrms_service.holiday.enums.BatchJobStatusEnum;
 import com.ru.hrms_service.holiday.enums.ImportHolidayStatusEnum;
 import com.ru.hrms_service.holiday.exception.BachJobStatusException;
 import com.ru.hrms_service.holiday.models.dto.HolidayRowDTO;
+import com.ru.hrms_service.holiday.models.dto.ImportHolidayResponse;
 import com.ru.hrms_service.holiday.models.request.FetchHolidaysReq;
 import com.ru.hrms_service.holiday.models.response.HolidayResponse;
 import com.ru.hrms_service.holiday.repositories.*;
@@ -18,6 +19,8 @@ import com.ru.hrms_service.holiday.specification.HolidaySpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +34,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,28 +67,29 @@ public class HolidayService {
                 .toList();
     }
 
-    public void importHoliday(MultipartFile file) {
-
-
+    public ApiResponse importHoliday(MultipartFile file) {
         BatchJobStatusEntity savedBacthJob = initializeBatchJob();
-
-
-
-
         try {
-            List<HolidayRowDTO> dtos = parseCsvFile(file);
 
-            List<ImportHolidayTempEntity> importHolidayTempEntities = convertToTempEntities(dtos, savedBacthJob);
-            importHolidayTempRepo.saveAll(importHolidayTempEntities);
-
-            validateAndProcessHolidays(savedBacthJob);
-
+            importHolidayAsync(file, savedBacthJob);
+            ImportHolidayResponse importHolidayResponse = new ImportHolidayResponse(savedBacthJob.getId(), "/getImportHolidayStatus/{batchId}");
+            return ApiResponse.processing(importHolidayResponse, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
 
             handleImportError(savedBacthJob, e);
             throw new RuntimeException("Failed to import holidays", e);
         }
+    }
+
+    @Async
+    public void importHolidayAsync(MultipartFile file, BatchJobStatusEntity savedBacthJob) throws IOException {
+        List<HolidayRowDTO> dtos = parseCsvFile(file);
+
+        List<ImportHolidayTempEntity> importHolidayTempEntities = convertToTempEntities(dtos, savedBacthJob);
+        importHolidayTempRepo.saveAll(importHolidayTempEntities);
+
+        validateAndProcessHolidays(savedBacthJob);
     }
 
     private List<ImportHolidayTempEntity> convertToTempEntities(List<HolidayRowDTO> dtos, BatchJobStatusEntity savedBacthJob) {
@@ -133,7 +137,8 @@ public class HolidayService {
         return dtos;
     }
 
-    private BatchJobStatusEntity initializeBatchJob() {
+
+    public BatchJobStatusEntity initializeBatchJob() {
         MasterBatchJobEntity masterBatchJob =
                 this.masterBachJobRepo.findByJobCodeAndDeleteFlagFalse(HOLODAYBATCHCODE).orElseThrow(() -> new RuntimeException("Job code not matched"));
 
@@ -142,9 +147,10 @@ public class HolidayService {
         batchJobStatusEntity.setStatus(BatchJobStatusEnum.IN_PROGRESS);
         batchJobStatusEntity.setCreatedBy(new UserEntity(1L));
         batchJobStatusEntity.setUpdatedBy(new UserEntity(1L));
-        batchJobStatusEntity.setRemarks("inp");
+
 
         BatchJobStatusEntity savedBacthJob = batchJobStatusRepo.save(batchJobStatusEntity);
+
         return savedBacthJob;
     }
 
@@ -211,13 +217,15 @@ public class HolidayService {
         return errors;
     }
 
+
     public void processValidationResult(BatchJobStatusEntity batchJob, List<ImportHolidayTempEntity> invalidHolidays) {
         if (!invalidHolidays.isEmpty()) {
             importHolidayTempRepo.saveAll(invalidHolidays);
             updateBatchJobStatus(batchJob, BatchJobStatusEnum.ERROR);
         } else {
             processHolidays(batchJob.getId());
-            updateBatchJobStatus(batchJob, BatchJobStatusEnum.COMPLETED);
+            this.batchJobStatusRepo.updateBatchStatusAsCompleted(batchJob.getId(),BatchJobStatusEnum.COMPLETED);
+           // updateBatchJobStatus(batchJob, BatchJobStatusEnum.COMPLETED);
         }
     }
 
@@ -233,20 +241,36 @@ public class HolidayService {
         batchJobStatusRepo.save(batchJob);
     }
 
-    public void getHolidayImportStatus(Long batchId) {
-      BatchJobStatusEntity batchJobStatusEntity =
+    public ApiResponse getHolidayImportStatus(Long batchId) {
+
+        ApiResponse apiResponse = null;
+
+        BatchJobStatusEntity batchJobStatusEntity =
                 this.batchJobStatusRepo.findByIdAndDeleteFlagFalse(batchId).orElseThrow(()->new BachJobStatusException("Batch job not found for id: " + batchId));
 
 
 
              if(batchJobStatusEntity.getStatus()==BatchJobStatusEnum.ERROR){
 
-                 List<String> remarks = this.importHolidayTempRepo.findRemarksByStatusAndBatchIdNative(BatchJobStatusEnum.ERROR.value(),
+                 List<String> remarks =
+                         this.importHolidayTempRepo.findRemarksByStatusAndBatchIdNative(ImportHolidayStatusEnum.INVALID.toString(),
                          batchJobStatusEntity.getId());
-
-
-
+                         System.out.print("Sizee================="+remarks.size());
+                 apiResponse = ApiResponse.fail(remarks,"import faild",HttpStatus.INTERNAL_SERVER_ERROR);
              }
+
+             if(batchJobStatusEntity.getStatus()==BatchJobStatusEnum.IN_PROGRESS){
+                 return ApiResponse.success(null,"Import holiday is processing");
+             }
+
+             if(batchJobStatusEntity.getStatus()==BatchJobStatusEnum.COMPLETED){
+
+//                 BatchJobStatusEntity batchJobStatusEntity1 =
+//                         this.batchJobStatusRepo.findByIdAndDeleteFlagFalse(batchId).orElseThrow(() -> new BatchNotFoundException(String.format("Batch not found exception for ID: %d", batchId)));
+                 System.out.println("batch job status ====================" + batchJobStatusEntity.getRemarks());
+                 return    ApiResponse.success(batchJobStatusEntity.getRemarks(),"Import holiday successfully");
+             }
+        return apiResponse;
     }
 
 

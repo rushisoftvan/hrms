@@ -33,9 +33,18 @@ public class ApiResponse   {
                 .message(message).build();
     }
 
-    public static ApiResponse fail(String message, HttpStatus httpStatus) {
+    public static ApiResponse fail(Object data,String message, HttpStatus httpStatus) {
         return builder()
+                .data(data)
                 .message(message)
+                .status(httpStatus.value())
+                .build();
+    }
+
+    public static ApiResponse processing(Object value, HttpStatus httpStatus) {
+        return builder()
+                .data(value)
+                .message("Your import process has started. You will be notified once it's completed, and you can check by batchId.")
                 .status(httpStatus.value())
                 .build();
     }
