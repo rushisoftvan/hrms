@@ -18,7 +18,7 @@ public class HolidayController {
      private final HolidayService holidayService;
 
     @PostMapping("/fetch")
-    public ResponseEntity<ApiResponse> fetchHolidayList( @RequestBody FetchHolidaysReq fetchHolidaysReq){
+    public ResponseEntity<ApiResponse> fetchHolidayList( @in RdeequestBody FetchHolidaysReq fetchHolidaysReq){
        return ResponseEntity.ok(this.holidayService.fetchHolidays(fetchHolidaysReq));
     }
 
