@@ -26,7 +26,7 @@ public class HolidayResponse {
        return builder()
                 .holidayDate(holiday.getHolidayDate())
                 .holidayDay(convertDateToDay(holiday.getHolidayDate()))
-                .isOptional(holiday.isOptionl())
+                .isOptional(holiday.isOptional())
                 .holidayName(holiday.getName())
                 .build();
 

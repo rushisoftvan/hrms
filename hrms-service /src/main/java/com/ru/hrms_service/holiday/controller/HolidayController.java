@@ -5,14 +5,13 @@ import com.ru.hrms_service.holiday.models.request.FetchHolidaysReq;
 import com.ru.hrms_service.holiday.services.HolidayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/hrms/holiday")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class HolidayController {
 
      private final HolidayService holidayService;
@@ -22,4 +21,14 @@ public class HolidayController {
        return ResponseEntity.ok(this.holidayService.fetchHolidays(fetchHolidaysReq));
     }
 
+   @PostMapping("/importHolidayCsv")
+   public ResponseEntity<ApiResponse> importHoliday(@RequestParam("file") MultipartFile file){
+      return ResponseEntity.ok(this.holidayService.importHoliday(file));
+   }
+
+
+    @GetMapping("/getImportHolidayStatus/{batchId}")
+    public ResponseEntity<ApiResponse> getHolidayImportStatus(@PathVariable("batchId") Long batchId) {
+        return ResponseEntity.ok( this.holidayService.getHolidayImportStatus(batchId));
+    }
 }
