@@ -27,6 +27,9 @@ public class UserEntity extends BaseEntity {
 
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RoleEntity roleEntity;
+
     public UserEntity(Long id) {
         this.id = id;
     }

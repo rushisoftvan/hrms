@@ -1,17 +1,33 @@
 package com.ru.hrms_service.leave.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ru.hrms_service.common.models.response.ApiResponse;
+import com.ru.hrms_service.leave.models.request.ApplyLeaveRequest;
+import com.ru.hrms_service.leave.service.LeaveService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/hrms/leave")
+@RequiredArgsConstructor
 public class LeaveController {
 
 
-  public fetchLeaveType(){
+    public static final String ENDPOINT_FETCH_LEAVE_TYPE = "/fetch-leaveType";
+    public static final String ENDPONT_APPLY_LEAVE = "apply_leave";
+    private  final LeaveService leaveService;
 
+  @GetMapping(ENDPOINT_FETCH_LEAVE_TYPE)
+  public ResponseEntity<ApiResponse> fetchLeaveType(){
+      return  ResponseEntity.ok(leaveService.fetchLeaveType());
   }
 
+   @PostMapping(ENDPONT_APPLY_LEAVE)
+   public void applyLeave(@Valid @RequestBody ApplyLeaveRequest applyLeaveRequest){
+      leaveService.applyLeave(applyLeaveRequest);
+   }
 
 
 }
