@@ -19,7 +19,8 @@ public interface LeaveTypeRepo extends JpaRepository<LeaveTypeEntity, Long> {
     List<KeyValue<Long, String>> fetchRequestType();
 
     @Query("""
-            select l from  LeaveTypeEntity l where l.type = :leaveTypeID and l.deleteFlag = false
+            select l from  LeaveTypeEntity l
+            where l.id = :leaveTypeID and l.deleteFlag = false
            """)
     Optional<LeaveTypeEntity> findLeaveTypeById(@Param("leaveTypeID") Long leaveTypeId);
 

@@ -32,7 +32,7 @@ public class LeaveRequestEntity extends LongIdEntity {
     private Instant startDate;
 
 
-    @Column(name = "start_date", nullable = false )
+    @Column(name = "end_date", nullable = false )
     private Instant endDate;
 
 

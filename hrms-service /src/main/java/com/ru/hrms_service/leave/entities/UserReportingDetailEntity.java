@@ -5,11 +5,13 @@ import com.ru.hrms_service.common.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @Table(name="user_reporting_detail")
+@ToString
 public class UserReportingDetailEntity  extends LongIdEntity  {
 
     @OneToOne(fetch = FetchType.LAZY)
