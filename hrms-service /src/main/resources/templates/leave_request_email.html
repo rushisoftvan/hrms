@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <title>Leave Details and Status Update</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+
+<h1>Leave Status Email (Approved/Rejected)</h1>
+
+<p>
+    Dear, <span th:text="${employeeName}"></span>
+</p>
+
+<p>I hope you are doing well. I am pleased to inform you that your leave request from
+    <strong><span th:text="${startDate}"></span></strong> to <strong><span th:text="${endDate}"></span></strong> has been
+    <span th:text="${status}"></span> by
+    <strong><span th:text="${managerName}"></span></strong>.</p>
+
+<p>Please ensure that all pending work is completed or delegated before your leave period. If you have any further questions, feel free to reach out.</p>
+
+<p>Wishing you a pleasant time off!</p>
+<p>
+    Thanks & Regards,<br>
+    Zepto Team
+</p>
+
+</body>
+</html>
+

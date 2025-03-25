@@ -16,9 +16,4 @@ public class CrossOriginFilter implements WebMvcConfigurer {
         .allowedOrigins("http://localhost:3000");
         
     }
-
-
-
-
-
 }

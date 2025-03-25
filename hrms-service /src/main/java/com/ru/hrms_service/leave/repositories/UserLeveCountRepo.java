@@ -2,9 +2,12 @@ package com.ru.hrms_service.leave.repositories;
 
 import com.ru.hrms_service.common.entities.UserEntity;
 import com.ru.hrms_service.leave.entities.UserLeaveCountEntity;
+import com.ru.hrms_service.leave.projection.LeaveCountDetailProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface UserLeveCountRepo extends JpaRepository<UserLeaveCountEntity, Long > {
 
@@ -15,4 +18,8 @@ public interface UserLeveCountRepo extends JpaRepository<UserLeaveCountEntity, L
    int findAvailableCountOfLeaveType(@Param("userId") Long userId , @Param("leaveTypeId") Long leaveTypeId );
 
     Long user(UserEntity user);
+
+
+    @Query(value = "select * from ")
+    List<LeaveCountDetailProjection> fetchUserLeaveCountDetail(Long userId);
 }

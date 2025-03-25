@@ -9,7 +9,11 @@ public enum LeaveTypeEnum {
 
     RESTRICTED_HOLIDAY("Restricted Holiday"),
 
-    SICK_LEAVE("Sick leave");
+    SICK_LEAVE("Sick leave"),
+
+    LEAVE_WITHOUT_PAY("LEAVE_WITHOUT_PAY");
+
+
 
 
     private String value;

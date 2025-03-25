@@ -2,6 +2,8 @@ package com.ru.hrms_service.leave.controller;
 
 import com.ru.hrms_service.common.models.response.ApiResponse;
 import com.ru.hrms_service.leave.models.request.ApplyLeaveRequest;
+import com.ru.hrms_service.leave.models.request.FetchLeaveRequest;
+import com.ru.hrms_service.leave.models.request.UpdateLeaveStatusRequest;
 import com.ru.hrms_service.leave.service.LeaveService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,21 +15,31 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LeaveController {
 
-
-    public static final String ENDPOINT_FETCH_LEAVE_TYPE = "/fetch-leaveType";
-    public static final String ENDPIONT_APPLY_LEAVE = "apply-leave";
     private  final LeaveService leaveService;
 
-  @GetMapping(ENDPOINT_FETCH_LEAVE_TYPE)
+  @GetMapping("/fetch-leaveType")
   public ResponseEntity<ApiResponse> fetchLeaveType(){
       return  ResponseEntity.ok(leaveService.fetchLeaveType());
   }
 
-   @PostMapping(ENDPIONT_APPLY_LEAVE)
-   public void applyLeave(@Valid @RequestBody ApplyLeaveRequest applyLeaveRequest,
-                          @RequestParam("userId") Long loggedInUserId){
-      leaveService.applyLeave(applyLeaveRequest,loggedInUserId);
+   @PostMapping("/apply-leave")
+   public ResponseEntity<ApiResponse> applyLeave(@Valid @RequestBody ApplyLeaveRequest applyLeaveRequest,
+                                                 @RequestParam("userId") Long loggedInUserId){
+    return ResponseEntity.ok(leaveService.applyLeave(applyLeaveRequest,loggedInUserId));
    }
 
+   @PutMapping("/update-leave-status")
+   public void updateLeaveRequestStatus(@RequestBody UpdateLeaveStatusRequest updateLeaveStatusRequest,
+                                        @RequestParam("userId") Long userId){
 
+      leaveService.updateLeaveStatus(updateLeaveStatusRequest, userId);
+
+   }
+
+   @PostMapping("/leave-request-details")
+   public ResponseEntity<ApiResponse> leaveRequestDetail(@RequestBody FetchLeaveRequest fetchLeaveRequest,
+                                                         @RequestParam("userId") Long loggedInUserId){
+         return ResponseEntity.ok(this.leaveService.fetchLeaves(fetchLeaveRequest, loggedInUserId));
+
+   }
 }

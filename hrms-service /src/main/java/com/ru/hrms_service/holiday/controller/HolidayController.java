@@ -31,4 +31,5 @@ public class HolidayController {
     public ResponseEntity<ApiResponse> getHolidayImportStatus(@PathVariable("batchId") Long batchId) {
         return ResponseEntity.ok( this.holidayService.getHolidayImportStatus(batchId));
     }
+
 }

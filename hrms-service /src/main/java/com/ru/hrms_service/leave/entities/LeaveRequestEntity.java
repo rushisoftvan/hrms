@@ -16,15 +16,15 @@ import java.time.Instant;
 @Table(name="leave_request")
 public class LeaveRequestEntity extends LongIdEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false )
      private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manager_id",nullable = false)
     private UserEntity manager;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "leave_type_id", nullable = false)
     private LeaveTypeEntity  leaveTypeEntity;
 
@@ -42,6 +42,4 @@ public class LeaveRequestEntity extends LongIdEntity {
 
     @Column(name="leave_reason")
     private String leaveReason;
-
-
 }

@@ -1,5 +1,6 @@
 package com.ru.hrms_service.common.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,10 +24,12 @@ public  class BaseEntity{
 
     private Instant updatedOn;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="created_by")
     private UserEntity createdBy;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="updated_by")
     private UserEntity updatedBy;
