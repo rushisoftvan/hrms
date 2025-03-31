@@ -7,9 +7,9 @@ public interface LeaveCountDetailProjection {
 
     String getLeaveTyp();
 
-    double  availableCount();
+    double  getAvailableCount();
 
-    double bookedCount();
+    double getBookedCount();
 
 
 

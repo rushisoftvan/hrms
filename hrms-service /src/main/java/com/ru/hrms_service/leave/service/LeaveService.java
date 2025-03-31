@@ -129,10 +129,8 @@ public class LeaveService {
                 leaveRequestEntity.setUpdatedBy(new UserEntity(userId));
                 leaveRequestEntity.setUpdatedOn(Instant.now());
                 LeaveRequestEntity updatedLeaveRequest = leaveRequestRepo.save(leaveRequestEntity);
-
             }
             else{
-
                 throw new CustomException("you can not change the status", HttpStatus.BAD_REQUEST)  ;
             }
         }
@@ -189,9 +187,7 @@ public class LeaveService {
 
         return content.stream().map(entity ->
                 new LeaveRequestResponse(
-                        String.join(" ", entity.getUser().getFirstName(), entity.getUser().getLastName()), // Assuming getName()
-                        // exists in
-                        // UserEntity
+                        String.join(" ", entity.getUser().getFirstName(), entity.getUser().getLastName()),
                         entity.getLeaveTypeEntity().getType(), // Assuming getLeaveType() exists in LeaveTypeEntity
                         entity.getStartDate(),
                         entity.getEndDate(),

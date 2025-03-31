@@ -20,6 +20,8 @@ public interface UserLeveCountRepo extends JpaRepository<UserLeaveCountEntity, L
     Long user(UserEntity user);
 
 
-    @Query(value = "select * from ")
-    List<LeaveCountDetailProjection> fetchUserLeaveCountDetail(Long userId);
+    @Query(value = """
+            select lt.type, uc.available_count, uc.booked_count from user_leave_type_count uc
+            join leave_type lt on lt.id = uc.leave_type_id where uc.user_id = :userId""", nativeQuery = true)
+    List<LeaveCountDetailProjection> fetchUserLeaveCountDetail(@Param("userId") Long userId);
 }

@@ -18,7 +18,7 @@ public class LeaveCountService {
 
     public void fetchLeaveCountDetails(Long userId){
         List<LeaveCountDetailProjection> leaveCountDetailProjections = userLeveCountRepo.fetchUserLeaveCountDetail(userId);
-        ApiResponse.success(leaveCountDetailProjections, "fetc" )
+        ApiResponse.success(leaveCountDetailProjections, "fetch successfully");
     }
 
 }

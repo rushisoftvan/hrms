@@ -1,18 +1,21 @@
 package com.ru.hrms_service.leave.controller;
 
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ru.hrms_service.leave.service.LeaveCountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/hrms/leave-count")
+@RequiredArgsConstructor
 public class LeaveCountDetailController {
+
+    private final LeaveCountService leaveCountService;
 
 
     @PostMapping("/fetch-leave-count")
-    public void getLeaveCountDetailByUserId(){
-
+    public void getLeaveCountDetailByUserId(@RequestHeader @RequestParam("userId") Long userId){
+          this.leaveCountService.fetchLeaveCountDetails(userId);
 
     }
 
