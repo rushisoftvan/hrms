@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
 import HolidayList from '../pages/components-overview/holiday/HolidayList';
+import LeaveList from '../pages/components-overview/LeaveList';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -57,8 +58,12 @@ const MainRoutes = {
       element: <AntIcons />
     },
     {
-      path : 'holidayl-list',
-      element: <HolidayList/>
+      path : 'holiday-list',
+      element: <HolidayList />
+    },
+    {
+      path : 'leave-list',
+      element: <LeaveList />
     }
   ]
 };

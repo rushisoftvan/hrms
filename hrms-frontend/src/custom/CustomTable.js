@@ -3,9 +3,9 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow }
 // Ensure this component is correctly handling sorting
 // import OrderStatus from "./OrderStatus"; // Ensure this component is correctly handling status
 
-export default function CustomTable({ rows }) {
+export default function CustomTable({ rows , headCells, renderHolidayRow , name }) {
 
-  console.log('props' +  rows);
+  console.log('props' +  JSON.stringify(rows));
   // const [order, setOrder] = useState("asc");
   // const [orderBy, setOrderBy] = useState("trackingNo");
   // const [selected, setSelected] = useState([]);
@@ -16,33 +16,7 @@ export default function CustomTable({ rows }) {
   //   setOrderBy(property);
   // };
 
-  const headCells = [
-    {
-      id: 'Holiday Name',
-      align: 'left',
-      disablePadding: false,
-      label: 'Holiday Name'
-    },
-    {
-      id: 'holidayDate',
-      align: 'left',
-      disablePadding: true,
-      label: 'holidayDate'
-    },
-    {
-      id: 'isOptional',
-      align: 'left',
-      disablePadding: false,
-      label: 'isOptional'
-    },
-    {
-      id: 'holidayDay',
-      align: 'left',
-      disablePadding: false,
 
-      label: 'holidayDay'
-    }
-  ];
 
   // const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
 
@@ -89,41 +63,11 @@ export default function CustomTable({ rows }) {
           </TableHead>
           <TableBody>
             {rows && rows.length > 0 ? (
-              rows.map((row) => {
-                // const isItemSelected = isSelected(row.trackingNo);
-                // const labelId = `enhanced-table-checkbox-${index}`;
-                       console.log("isOptional" + row.isOptional);
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    // aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.trackingNo}
-                    // selected={isItemSelected}
-                  >
-                    <TableCell component="th"  scope="row" align="left">
-                        {row.holidayName}
-                    </TableCell>
-                    <TableCell align="left">
-                      {row.isOptional ? (
-                        <span style={{ color: 'red' }}>Optional</span>
-                      ) : (
-                        <span style={{ color: 'green' }}>Mandatory</span>
-                      )}
-                    </TableCell>
-
-                    <TableCell align="left">{row.holidayDate}</TableCell>
-
-                    <TableCell align="left">{row.holidayDay}</TableCell>
-                  </TableRow>
-                );
-              })
+              rows.map((row, index) => renderHolidayRow(row, index)) // ✅ Using renderHolidayRow here
             ) : (
               <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No holiday available
+                <TableCell colSpan={headCells.length} align="center">
+                  No {name} available
                 </TableCell>
               </TableRow>
             )}
