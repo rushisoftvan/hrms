@@ -60,7 +60,7 @@ public interface LeaveRequestRepo extends JpaRepository<LeaveRequestEntity, Long
             AND (:startDate IS NULL OR lr.startDate >= :startDate) \
             AND (:endDate IS NULL OR lr.endDate <= :endDate) \
             AND (:leaveStatus IS NULL OR lr.leaveStatusEnum = :leaveStatus)""")
-    Page<LeaveRequestEntity> fetchLeavesList(
+    List<LeaveRequestEntity> fetchLeavesList(
             @Param("leaveTypeId") Long leaveTypeId,
             @Param("leaveStatus") LeaveStatusEnum leaveStatus,
             @Param("startDate") Instant startDate,

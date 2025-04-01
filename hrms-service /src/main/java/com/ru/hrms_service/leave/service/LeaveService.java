@@ -173,7 +173,7 @@ public class LeaveService {
 
         Pageable pageable = fetchLeaveRequest.preparePageRequest();
 
-        Page<LeaveRequestEntity> leaveRequestEntities = this.leaveRequestRepo.fetchLeavesList(fetchLeaveRequest.getLeaveTypeId(),
+        Page<LeaveRequestEntity> leaveRequestEntities = this.leaveRequestRepo.fetchLeaves(fetchLeaveRequest.getLeaveTypeId(),
                 fetchLeaveRequest.getLeaveStatus(), fetchLeaveRequest.getStartDate(),
                 fetchLeaveRequest.getEndDate(), pageable);
         List<LeaveRequestResponse> leaveRequestResponses = prepareLeaveRequestsResponse(leaveRequestEntities);
