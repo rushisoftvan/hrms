@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/hrms/leave")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class LeaveController {
 
     private  final LeaveService leaveService;
@@ -38,7 +39,7 @@ public class LeaveController {
 
    @PostMapping("/leave-request-details")
    public ResponseEntity<ApiResponse> leaveRequestDetail(@RequestBody FetchLeaveRequest fetchLeaveRequest,
-                                                         @RequestParam("userId") Long loggedInUserId){
+                                                         @RequestHeader("userId") Long loggedInUserId){
          return ResponseEntity.ok(this.leaveService.fetchLeaves(fetchLeaveRequest, loggedInUserId));
 
    }
