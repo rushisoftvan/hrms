@@ -12,13 +12,9 @@ import org.springframework.web.bind.annotation.*;
 public class LeaveCountDetailController {
 
     private final LeaveCountService leaveCountService;
-
-
     @PostMapping("/fetch-leave-count")
     public void getLeaveCountDetailByUserId(@RequestHeader @RequestParam("userId") Long userId){
           this.leaveCountService.fetchLeaveCountDetails(userId);
-
     }
-
 
 }

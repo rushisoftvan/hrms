@@ -13,7 +13,7 @@ public interface LeaveTypeRepo extends JpaRepository<LeaveTypeEntity, Long> {
 
 
     @Query(value = """
-                  select id as  key, type as value from leave_type lt  where lt.delete_flag = false
+                 select lt.id as `key` , lt.type as  `value`   from leave_type lt  where lt.delete_flag = false
             """,
             nativeQuery = true)
     List<KeyValue<Long, String>> fetchRequestType();

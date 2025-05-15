@@ -1,0 +1,39 @@
+ select
+        lre1_0.id,
+        lre1_0.active,
+        lre1_0.created_by,
+        lre1_0.created_on,
+        lre1_0.delete_flag,
+        lre1_0.end_date,
+        lre1_0.leave_reason,
+        lre1_0.leave_status,
+        lre1_0.leave_type_id,
+        lre1_0.manager_id,
+        lre1_0.start_date,
+        lre1_0.updated_by,
+        lre1_0.updated_on,
+        lre1_0.user_id
+    from
+        leave_request lre1_0
+    where
+        1=1
+        and (
+            ? is null
+            or lre1_0.leave_type_id=?
+        )
+        and (
+            ? is null
+            or lre1_0.start_date>=?
+        )
+        and (
+            ? is null
+            or lre1_0.end_date<=?
+        )
+        and (
+            ? is null
+            or lre1_0.leave_status=?
+        )
+    order by
+        lre1_0.updated_on desc
+    limit
+        ?

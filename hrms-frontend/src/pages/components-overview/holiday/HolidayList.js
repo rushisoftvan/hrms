@@ -2,13 +2,42 @@ import { useEffect, useState } from 'react';
 
 import { fetchHolidayList } from '../../../api/holiday.api';
 import CustomTable from '../../../custom/CustomTable';
-import { FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import { FormControl, FormControlLabel, Radio, RadioGroup, TableCell, TableRow, TextField } from '@mui/material';
 import { debounce } from 'lodash';
 
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState([]);
   const [holidayStatus, setHolidayStatus] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+
+  const headCells = [
+    {
+      id: 'Holiday Name',
+      align: 'left',
+      disablePadding: false,
+      label: 'Holiday Name'
+    },
+    {
+      id: 'holidayDate',
+      align: 'left',
+      disablePadding: true,
+      label: 'holidayDate'
+    },
+    {
+      id: 'isOptional',
+      align: 'left',
+      disablePadding: false,
+      label: 'isOptional'
+    },
+    {
+      id: 'holidayDay',
+      align: 'left',
+      disablePadding: false,
+
+      label: 'holidayDay'
+    }
+  ];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,9 +93,6 @@ const HolidayList = () => {
       });
       setHolidayData(response.data.data); // Update the holiday data state
       console.log('Holidays that have gone:', response.data.data);
-      setTimeout(() => {
-        setSearchQuery("");
-      }, 1000);
     } catch (err) {
       console.log('Error fetching holidays that have gone:', err);
     }
@@ -74,8 +100,7 @@ const HolidayList = () => {
 
   // when status all
 
-  const onAllHandleRadioButton = async () =>{
-
+  const onAllHandleRadioButton = async () => {
     try {
       const response = await fetchHolidayList({
         holidayStatus: null, // Pass status for holidays that have gone
@@ -86,7 +111,7 @@ const HolidayList = () => {
     } catch (err) {
       console.log('Error fetching holidays that have gone:', err);
     }
-  }
+  };
 
   // Handle radio button change
   const handleRadioChange = (event) => {
@@ -97,11 +122,21 @@ const HolidayList = () => {
       onUpcoming(); // Fetch upcoming holidays when the "Upcoming" radio button is selected
     } else if (value === 'hasGone') {
       onHasGone(); // Fetch holidays that have gone when the "HasGone" radio button is selected
-    }
-    else if(value === 'All'){
+    } else if (value === 'All') {
       onAllHandleRadioButton();
     }
   };
+
+  const renderHolidayRow = (row, index) => (
+    <TableRow key={index} hover>
+      <TableCell align="left">{row.holidayName}</TableCell>
+      <TableCell align="left" style={{ color: row.isOptional ? "red" : "green" }}>
+        {row.isOptional ? "Optional" : "Mandatory"}
+      </TableCell>
+      <TableCell align="left">{row.holidayDate}</TableCell>
+      <TableCell align="left">{row.holidayDay}</TableCell>
+    </TableRow>
+  );
 
   return (
     <div>
@@ -131,12 +166,11 @@ const HolidayList = () => {
           >
             <FormControlLabel value="UpComping" control={<Radio />} label="Upcoming" />
             <FormControlLabel value="hasGone" control={<Radio />} label="Past Holidays" />
-            <FormControlLabel value="All" control={<Radio />} label="All"/>
-
+            <FormControlLabel value="All" control={<Radio />} label="All" />
           </RadioGroup>
         </div>
       </FormControl>
-      <CustomTable rows={holidayData} />
+      <CustomTable rows={holidayData} headCells={headCells}  renderHolidayRow = {renderHolidayRow} name={"Holiday List"}  />
     </div>
   );
 };

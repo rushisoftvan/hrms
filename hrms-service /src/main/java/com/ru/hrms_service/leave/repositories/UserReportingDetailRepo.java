@@ -13,6 +13,6 @@ public interface UserReportingDetailRepo extends JpaRepository<UserReportingDeta
               select u from UserReportingDetailEntity u
               join fetch  u.reportingManager where u.user.id = :userId and u.deleteFlag = false
               """)
-       Optional<UserReportingDetailEntity> findUserReportingDetailByUserId(@Param("userId") Long userId);
+       Optional<UserReportingDetailEntity>  findUserReportingDetailByUserId(@Param("userId") Long userId);
 
 }

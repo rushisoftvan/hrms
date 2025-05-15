@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,12 +64,17 @@ public class LeaveService {
 
     @Transactional
     public ApiResponse applyLeave(ApplyLeaveRequest applyLeaveRequest, Long loggedInUserId) {
-        var leaveTypeEntity =
-                leaveTypeRepo.findLeaveTypeById(applyLeaveRequest.leaveTypeId()).orElseThrow(() -> new ResourceNotFoundException("Leave type not found"));
-        LeaveRequestEntity leaveRequestEntity = prepareApplyRequest(applyLeaveRequest, leaveTypeEntity, loggedInUserId);
-        LeaveRequestEntity savedLeaveRequest = this.leaveRequestRepo.save(leaveRequestEntity);
-        return ApiResponse.success(Map.of("applyLeaveRequest", savedLeaveRequest.getId()), "leave request apply " +
-                                                                                           "successfully");
+
+        try {
+            var leaveTypeEntity =
+                    leaveTypeRepo.findLeaveTypeById(applyLeaveRequest.leaveTypeId()).orElseThrow(() -> new ResourceNotFoundException("Leave type not found"));
+            LeaveRequestEntity leaveRequestEntity = prepareApplyRequest(applyLeaveRequest, leaveTypeEntity, loggedInUserId);
+            LeaveRequestEntity savedLeaveRequest = this.leaveRequestRepo.save(leaveRequestEntity);
+            return ApiResponse.success(Map.of("applyLeaveRequest", savedLeaveRequest.getId()), "leave request apply " +
+                                                                                               "successfully");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private LeaveRequestEntity prepareApplyRequest(ApplyLeaveRequest applyLeaveRequest,
@@ -100,16 +106,16 @@ public class LeaveService {
     }
 
     private boolean checkAvailableCountForLeaveType(Long userId, Long leaveTypeId) {
-        int availableCountOfLeaveType = userLeveCountRepo.findAvailableCountOfLeaveType(userId, leaveTypeId);
+        Integer availableCountOfLeaveType = userLeveCountRepo.findAvailableCountOfLeaveType(userId, leaveTypeId);
         log.info("checkAvailableCountForLeaveType : {}", availableCountOfLeaveType);
-        return availableCountOfLeaveType > 0;
+        return availableCountOfLeaveType != null && availableCountOfLeaveType > 0 ;
     }
 
-    private void checkLeaveApplyDuplicate(Long userId, Instant startDate, Instant endDate) {
+    private void checkLeaveApplyDuplicate(Long userId, Instant  startDate, Instant endDate) {
         int leaveApplyCountAlready = leaveRequestRepo.countOverlappingLeaves(userId, startDate, endDate);
         log.info("checkLeaveApplyDuplicate :: leaveApplyCountAlready : {} ", leaveApplyCountAlready);
         if (leaveApplyCountAlready > 0) {
-            throw new CustomException("already apply the leave between this date range", HttpStatus.BAD_REQUEST);
+            throw new CustomException("already apply the leave between this date range", HttpStatus.CONFLICT);
         }
     }
 
@@ -192,7 +198,8 @@ public class LeaveService {
                         entity.getStartDate(),
                         entity.getEndDate(),
                         entity.getLeaveStatusEnum(),
-                        entity.getLeaveReason()
+                        entity.getLeaveReason(),
+                        entity.getCreatedOn()
                 )
         ).collect(Collectors.toList());
     }

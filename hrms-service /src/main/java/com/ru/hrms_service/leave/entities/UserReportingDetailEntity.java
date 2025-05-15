@@ -15,7 +15,7 @@ import lombok.ToString;
 public class UserReportingDetailEntity  extends LongIdEntity  {
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+        @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)

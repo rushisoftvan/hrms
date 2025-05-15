@@ -17,6 +17,7 @@ export function setupAxios(axios, store) {
       //   auth: {accessToken}
       // } = store.getState();
       const  accessToken = localStorage.getItem("AccessTKN");
+
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
@@ -89,7 +90,11 @@ export const request = (options) => {
   console.log('request');
   const config = {
     url: options["url"],
-    method: options["method"]
+    method: options["method"],
+    headers: {
+      "Content-Type": "application/json",  // Default headers
+      ...options["headers"],  // Include additional headers dynamically
+    },
   };
 
   if (options["body"]) {

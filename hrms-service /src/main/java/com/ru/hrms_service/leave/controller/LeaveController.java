@@ -25,7 +25,7 @@ public class LeaveController {
 
    @PostMapping("/apply-leave")
    public ResponseEntity<ApiResponse> applyLeave(@Valid @RequestBody ApplyLeaveRequest applyLeaveRequest,
-                                                 @RequestParam("userId") Long loggedInUserId){
+                                                 @RequestHeader("userId") Long loggedInUserId){
     return ResponseEntity.ok(leaveService.applyLeave(applyLeaveRequest,loggedInUserId));
    }
 
@@ -41,6 +41,5 @@ public class LeaveController {
    public ResponseEntity<ApiResponse> leaveRequestDetail(@RequestBody FetchLeaveRequest fetchLeaveRequest,
                                                          @RequestHeader("userId") Long loggedInUserId){
          return ResponseEntity.ok(this.leaveService.fetchLeaves(fetchLeaveRequest, loggedInUserId));
-
    }
 }
