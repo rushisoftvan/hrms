@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 // Ensure this component is correctly handling sorting
 // import OrderStatus from "./OrderStatus"; // Ensure this component is correctly handling status
 
-export default function CustomTable({ rows , headCells, renderHolidayRow , name }) {
+export default function CustomTable({ rows , headCells, renderHolidayRow , name , totalElement , page, handleChangePage , rowsPerPage  }) {
 
   console.log('props' +  JSON.stringify(rows));
   // const [order, setOrder] = useState("asc");
@@ -74,6 +74,14 @@ export default function CustomTable({ rows , headCells, renderHolidayRow , name 
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        // rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={totalElement}
+       rowsPerPage={rowsPerPage}
+        page={page}
+       onPageChange={handleChangePage}
+      />
     </Box>
   );
 }

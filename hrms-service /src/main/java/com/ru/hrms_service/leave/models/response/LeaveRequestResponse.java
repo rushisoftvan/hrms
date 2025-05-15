@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,4 +28,6 @@ public class LeaveRequestResponse {
     private LeaveStatusEnum leaveStatusEnum;
 
     private String leaveReason;
+
+    private Instant dateOfRequest;
 }
